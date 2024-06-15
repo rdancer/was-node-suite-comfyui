@@ -7969,21 +7969,15 @@ class WAS_Mask_Dominant_Region:
     FUNCTION = "dominant_region"
 
     def dominant_region(self, masks, threshold=128):
-        if masks.ndim > 3:
-            regions = []
-            for mask in masks:
-                mask_pil = Image.fromarray(np.clip(255. * mask.cpu().numpy().squeeze(), 0, 255).astype(np.uint8))
-                region_mask = self.WT.Masking.dominant_region(mask_pil, threshold)
-                region_tensor = pil2mask(region_mask).unsqueeze(0).unsqueeze(1)
-                regions.append(region_tensor)
-            regions_tensor = torch.cat(regions, dim=0)
-            return (regions_tensor,)
-        else:
-            mask_pil = Image.fromarray(np.clip(255. * masks.cpu().numpy().squeeze(), 0, 255).astype(np.uint8))
+        assert masks.ndim == 3, f"Masks must be a batch of 2D arrays, got: {masks.shape}"
+        regions = []
+        for mask in masks:
+            mask_pil = Image.fromarray(np.clip(255. * mask.cpu().numpy().squeeze(), 0, 255).astype(np.uint8))
             region_mask = self.WT.Masking.dominant_region(mask_pil, threshold)
             region_tensor = pil2mask(region_mask).unsqueeze(0).unsqueeze(1)
-            return (region_tensor,)
-
+            regions.append(region_tensor)
+        regions_tensor = torch.cat(regions, dim=0)
+        return (regions_tensor,)
 
 # MASK MINORITY REGION
 
@@ -8009,24 +8003,16 @@ class WAS_Mask_Minority_Region:
     FUNCTION = "minority_region"
 
     def minority_region(self, masks, threshold=128):
-        if masks.ndim > 3:
-            regions = []
-            for mask in masks:
-                mask_np = np.clip(255. * mask.cpu().numpy().squeeze(), 0, 255).astype(np.uint8)
-                pil_image = Image.fromarray(mask_np, mode="L")
-                region_mask = self.WT.Masking.minority_region(pil_image, threshold)
-                region_tensor = pil2mask(region_mask).unsqueeze(0).unsqueeze(1)
-                regions.append(region_tensor)
-            regions_tensor = torch.cat(regions, dim=0)
-            return (regions_tensor,)
-        else:
-            mask_np = np.clip(255. * masks.cpu().numpy().squeeze(), 0, 255).astype(np.uint8)
+        assert masks.ndim == 3, f"Masks must be a batch of 2D arrays, got: {masks.shape}"
+        regions = []
+        for mask in masks:
+            mask_np = np.clip(255. * mask.cpu().numpy().squeeze(), 0, 255).astype(np.uint8)
             pil_image = Image.fromarray(mask_np, mode="L")
             region_mask = self.WT.Masking.minority_region(pil_image, threshold)
             region_tensor = pil2mask(region_mask).unsqueeze(0).unsqueeze(1)
-            return (region_tensor,)
-
-
+            regions.append(region_tensor)
+        regions_tensor = torch.cat(regions, dim=0)
+        return (regions_tensor,)
 
 # MASK ARBITRARY REGION
 
@@ -8053,22 +8039,16 @@ class WAS_Mask_Arbitrary_Region:
     FUNCTION = "arbitrary_region"
 
     def arbitrary_region(self, masks, size=256, threshold=128):
-        if masks.ndim > 3:
-            regions = []
-            for mask in masks:
-                mask_np = np.clip(255. * mask.cpu().numpy().squeeze(), 0, 255).astype(np.uint8)
-                pil_image = Image.fromarray(mask_np, mode="L")
-                region_mask = self.WT.Masking.arbitrary_region(pil_image, size, threshold)
-                region_tensor = pil2mask(region_mask).unsqueeze(0).unsqueeze(1)
-                regions.append(region_tensor)
-            regions_tensor = torch.cat(regions, dim=0)
-            return (regions_tensor,)
-        else:
-            mask_np = np.clip(255. * masks.cpu().numpy().squeeze(), 0, 255).astype(np.uint8)
+        assert masks.ndim == 3, f"Masks must be a batch of 2D arrays, got: {masks.shape}"
+        regions = []
+        for mask in masks:
+            mask_np = np.clip(255. * mask.cpu().numpy().squeeze(), 0, 255).astype(np.uint8)
             pil_image = Image.fromarray(mask_np, mode="L")
             region_mask = self.WT.Masking.arbitrary_region(pil_image, size, threshold)
             region_tensor = pil2mask(region_mask).unsqueeze(0).unsqueeze(1)
-            return (region_tensor,)
+            regions.append(region_tensor)
+        regions_tensor = torch.cat(regions, dim=0)
+        return (regions_tensor,)
 
 # MASK SMOOTH REGION
 
@@ -8094,22 +8074,16 @@ class WAS_Mask_Smooth_Region:
     FUNCTION = "smooth_region"
 
     def smooth_region(self, masks, sigma=128):
-        if masks.ndim > 3:
-            regions = []
-            for mask in masks:
-                mask_np = np.clip(255. * mask.cpu().numpy().squeeze(), 0, 255).astype(np.uint8)
-                pil_image = Image.fromarray(mask_np, mode="L")
-                region_mask = self.WT.Masking.smooth_region(pil_image, sigma)
-                region_tensor = pil2mask(region_mask).unsqueeze(0).unsqueeze(1)
-                regions.append(region_tensor)
-            regions_tensor = torch.cat(regions, dim=0)
-            return (regions_tensor,)
-        else:
-            mask_np = np.clip(255. * masks.cpu().numpy().squeeze(), 0, 255).astype(np.uint8)
+        assert masks.ndim == 3, f"Masks must be a batch of 2D arrays, got: {masks.shape}"
+        regions = []
+        for mask in masks:
+            mask_np = np.clip(255. * mask.cpu().numpy().squeeze(), 0, 255).astype(np.uint8)
             pil_image = Image.fromarray(mask_np, mode="L")
             region_mask = self.WT.Masking.smooth_region(pil_image, sigma)
             region_tensor = pil2mask(region_mask).unsqueeze(0).unsqueeze(1)
-            return (region_tensor,)
+            regions.append(region_tensor)
+        regions_tensor = torch.cat(regions, dim=0)
+        return (regions_tensor,)
 
 
 # MASK ERODE REGION
@@ -8136,22 +8110,16 @@ class WAS_Mask_Erode_Region:
     FUNCTION = "erode_region"
 
     def erode_region(self, masks, iterations=5):
-        if masks.ndim > 3:
-            regions = []
-            for mask in masks:
-                mask_np = np.clip(255. * mask.cpu().numpy().squeeze(), 0, 255).astype(np.uint8)
-                pil_image = Image.fromarray(mask_np, mode="L")
-                region_mask = self.WT.Masking.erode_region(pil_image, iterations)
-                region_tensor = pil2mask(region_mask).unsqueeze(0).unsqueeze(1)
-                regions.append(region_tensor)
-            regions_tensor = torch.cat(regions, dim=0)
-            return (regions_tensor,)
-        else:
-            mask_np = np.clip(255. * masks.cpu().numpy().squeeze(), 0, 255).astype(np.uint8)
+        assert masks.ndim == 3, f"Masks must be a batch of 2D arrays, got: {masks.shape}"
+        regions = []
+        for mask in masks:
+            mask_np = np.clip(255. * mask.cpu().numpy().squeeze(), 0, 255).astype(np.uint8)
             pil_image = Image.fromarray(mask_np, mode="L")
             region_mask = self.WT.Masking.erode_region(pil_image, iterations)
             region_tensor = pil2mask(region_mask).unsqueeze(0).unsqueeze(1)
-            return (region_tensor,)
+            regions.append(region_tensor)
+        regions_tensor = torch.cat(regions, dim=0)
+        return (regions_tensor,)
 
 # MASKS SUBTRACT
 
@@ -8260,23 +8228,16 @@ class WAS_Mask_Dilate_Region:
     FUNCTION = "dilate_region"
 
     def dilate_region(self, masks, iterations=5):
-        if masks.ndim > 3:
-            regions = []
-            for mask in masks:
-                mask_np = np.clip(255. * mask.cpu().numpy().squeeze(), 0, 255).astype(np.uint8)
-                pil_image = Image.fromarray(mask_np, mode="L")
-                region_mask = self.WT.Masking.dilate_region(pil_image, iterations)
-                region_tensor = pil2mask(region_mask).unsqueeze(0).unsqueeze(1)
-                regions.append(region_tensor)
-            regions_tensor = torch.cat(regions, dim=0)
-            return (regions_tensor,)
-        else:
-            mask_np = np.clip(255. * masks.cpu().numpy().squeeze(), 0, 255).astype(np.uint8)
+        assert masks.ndim == 3, f"Masks must be a batch of 2D arrays, got: {masks.shape}"
+        regions = []
+        for mask in masks:
+            mask_np = np.clip(255. * mask.cpu().numpy().squeeze(), 0, 255).astype(np.uint8)
             pil_image = Image.fromarray(mask_np, mode="L")
             region_mask = self.WT.Masking.dilate_region(pil_image, iterations)
             region_tensor = pil2mask(region_mask).unsqueeze(0).unsqueeze(1)
-            return (region_tensor,)
-
+            regions.append(region_tensor)
+        regions_tensor = torch.cat(regions, dim=0)
+        return (regions_tensor,)
 
 # MASK FILL REGION
 
@@ -8301,23 +8262,16 @@ class WAS_Mask_Fill_Region:
     FUNCTION = "fill_region"
 
     def fill_region(self, masks):
-        if masks.ndim > 3:
-            regions = []
-            for mask in masks:
-                mask_np = np.clip(255. * mask.cpu().numpy().squeeze(), 0, 255).astype(np.uint8)
-                pil_image = Image.fromarray(mask_np, mode="L")
-                region_mask = self.WT.Masking.fill_region(pil_image)
-                region_tensor = pil2mask(region_mask).unsqueeze(0).unsqueeze(1)
-                regions.append(region_tensor)
-            regions_tensor = torch.cat(regions, dim=0)
-            return (regions_tensor,)
-        else:
-            mask_np = np.clip(255. * masks.cpu().numpy().squeeze(), 0, 255).astype(np.uint8)
+        assert masks.ndim == 3, f"Masks must be a batch of 2D arrays, got: {masks.shape}"
+        regions = []
+        for mask in masks:
+            mask_np = np.clip(255. * mask.cpu().numpy().squeeze(), 0, 255).astype(np.uint8)
             pil_image = Image.fromarray(mask_np, mode="L")
             region_mask = self.WT.Masking.fill_region(pil_image)
             region_tensor = pil2mask(region_mask).unsqueeze(0).unsqueeze(1)
-            return (region_tensor,)
-
+            regions.append(region_tensor)
+        regions_tensor = torch.cat(regions, dim=0)
+        return (regions_tensor,)
 
 # MASK THRESHOLD
 
@@ -8344,23 +8298,16 @@ class WAS_Mask_Threshold_Region:
     FUNCTION = "threshold_region"
 
     def threshold_region(self, masks, black_threshold=75, white_threshold=255):
-        if masks.ndim > 3:
-            regions = []
-            for mask in masks:
-                mask_np = np.clip(255. * mask.cpu().numpy().squeeze(), 0, 255).astype(np.uint8)
-                pil_image = Image.fromarray(mask_np, mode="L")
-                region_mask = self.WT.Masking.threshold_region(pil_image, black_threshold, white_threshold)
-                region_tensor = pil2mask(region_mask).unsqueeze(0).unsqueeze(1)
-                regions.append(region_tensor)
-            regions_tensor = torch.cat(regions, dim=0)
-            return (regions_tensor,)
-        else:
-            mask_np = np.clip(255. * masks.cpu().numpy().squeeze(), 0, 255).astype(np.uint8)
+        assert masks.ndim == 3, f"Masks must be a batch of 2D arrays, got: {masks.shape}"
+        regions = []
+        for mask in masks:
+            mask_np = np.clip(255. * mask.cpu().numpy().squeeze(), 0, 255).astype(np.uint8)
             pil_image = Image.fromarray(mask_np, mode="L")
             region_mask = self.WT.Masking.threshold_region(pil_image, black_threshold, white_threshold)
             region_tensor = pil2mask(region_mask).unsqueeze(0).unsqueeze(1)
-            return (region_tensor,)
-
+            regions.append(region_tensor)
+        regions_tensor = torch.cat(regions, dim=0)
+        return (regions_tensor,)
 
 # MASK FLOOR REGION
 
@@ -8385,23 +8332,16 @@ class WAS_Mask_Floor_Region:
     FUNCTION = "floor_region"
 
     def floor_region(self, masks):
-        if masks.ndim > 3:
-            regions = []
-            for mask in masks:
-                mask_np = np.clip(255. * mask.cpu().numpy().squeeze(), 0, 255).astype(np.uint8)
-                pil_image = Image.fromarray(mask_np, mode="L")
-                region_mask = self.WT.Masking.floor_region(pil_image)
-                region_tensor = pil2mask(region_mask).unsqueeze(0).unsqueeze(1)
-                regions.append(region_tensor)
-            regions_tensor = torch.cat(regions, dim=0)
-            return (regions_tensor,)
-        else:
-            mask_np = np.clip(255. * masks.cpu().numpy().squeeze(), 0, 255).astype(np.uint8)
+        assert masks.ndim == 3, f"Masks must be a batch of 2D arrays, got: {masks.shape}"
+        regions = []
+        for mask in masks:
+            mask_np = np.clip(255. * mask.cpu().numpy().squeeze(), 0, 255).astype(np.uint8)
             pil_image = Image.fromarray(mask_np, mode="L")
             region_mask = self.WT.Masking.floor_region(pil_image)
             region_tensor = pil2mask(region_mask).unsqueeze(0).unsqueeze(1)
-            return (region_tensor,)
-
+            regions.append(region_tensor)
+        regions_tensor = torch.cat(regions, dim=0)
+        return (regions_tensor,)
 
 # MASK CEILING REGION
 
@@ -8426,23 +8366,16 @@ class WAS_Mask_Ceiling_Region:
     FUNCTION = "ceiling_region"
 
     def ceiling_region(self, masks):
-        if masks.ndim > 3:
-            regions = []
-            for mask in masks:
-                mask_np = np.clip(255. * mask.cpu().numpy().squeeze(), 0, 255).astype(np.uint8)
-                pil_image = Image.fromarray(mask_np, mode="L")
-                region_mask = self.WT.Masking.ceiling_region(pil_image)
-                region_tensor = pil2mask(region_mask).unsqueeze(0).unsqueeze(1)
-                regions.append(region_tensor)
-            regions_tensor = torch.cat(regions, dim=0)
-            return (regions_tensor,)
-        else:
-            mask_np = np.clip(255. * masks.cpu().numpy().squeeze(), 0, 255).astype(np.uint8)
+        assert masks.ndim == 3, f"Masks must be a batch of 2D arrays, got: {masks.shape}"
+        regions = []
+        for mask in masks:
+            mask_np = np.clip(255. * mask.cpu().numpy().squeeze(), 0, 255).astype(np.uint8)
             pil_image = Image.fromarray(mask_np, mode="L")
             region_mask = self.WT.Masking.ceiling_region(pil_image)
             region_tensor = pil2mask(region_mask).unsqueeze(0).unsqueeze(1)
-            return (region_tensor,)
-
+            regions.append(region_tensor)
+        regions_tensor = torch.cat(regions, dim=0)
+        return (regions_tensor,)
 
 # MASK GAUSSIAN REGION
 
@@ -8468,23 +8401,16 @@ class WAS_Mask_Gaussian_Region:
     FUNCTION = "gaussian_region"
 
     def gaussian_region(self, masks, radius=5.0):
-        if masks.ndim > 3:
-            regions = []
-            for mask in masks:
-                mask_np = np.clip(255. * mask.cpu().numpy().squeeze(), 0, 255).astype(np.uint8)
-                pil_image = Image.fromarray(mask_np, mode="L")
-                region_mask = self.WT.Masking.gaussian_region(pil_image, radius)
-                region_tensor = pil2mask(region_mask).unsqueeze(0).unsqueeze(1)
-                regions.append(region_tensor)
-            regions_tensor = torch.cat(regions, dim=0)
-            return (regions_tensor,)
-        else:
-            mask_np = np.clip(255. * masks.cpu().numpy().squeeze(), 0, 255).astype(np.uint8)
+        assert masks.ndim == 3, f"Masks must be a batch of 2D arrays, got: {masks.shape}"
+        regions = []
+        for mask in masks:
+            mask_np = np.clip(255. * mask.cpu().numpy().squeeze(), 0, 255).astype(np.uint8)
             pil_image = Image.fromarray(mask_np, mode="L")
             region_mask = self.WT.Masking.gaussian_region(pil_image, radius)
             region_tensor = pil2mask(region_mask).unsqueeze(0).unsqueeze(1)
-            return (region_tensor,)
-
+            regions.append(region_tensor)
+        regions_tensor = torch.cat(regions, dim=0)
+        return (regions_tensor,)
 
 # MASK COMBINE
 
